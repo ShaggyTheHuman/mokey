@@ -77,8 +77,8 @@ class PlayState extends MusicBeatState
 		['Nice', 0.7], //69%
 		['Good', 0.8], //From 70% to 79%
 		['Great', 0.9], //From 80% to 89%
-		['Sick!', 1], //From 90% to 99%
-		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+		['Damn', 1], //From 90% to 99%
+		['OH BOI', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
 	
 	#if (haxe >= "4.0.0")
@@ -393,6 +393,10 @@ class PlayState extends MusicBeatState
 					stageCurtains.updateHitbox();
 					add(stageCurtains);
 				}
+				
+			case 'white': //Week boi
+				var whitebg:BGSprite = new BGSprite('whitebg', -600, -200, 0.9, 0.9);
+				add(whitebg);
 
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
@@ -1128,19 +1132,25 @@ class PlayState extends MusicBeatState
 
 		if(foundFile) 
 		{
-            var video = new WebmPlayerS(fileName, true);
-            video.endcallback = () -> {
-                remove(video);
-                if(endingSong) {
-                    endSong();
-                } else {
-                    startCountdown();
-                }
-            }
-            video.setGraphicSize(FlxG.width);
-            video.updateHitbox();
-            add(video);
-            video.play();
+			if (!runCutscene)
+		    {
+	            FlxG.switchState(new VideoState('assets/videos/' + fileName + '.webm', function()
+	            {
+	                FlxG.switchState(new PlayState());  
+	                runCutscene = true;                          
+	            }));
+		    }
+		    else
+		    {
+				if(endingSong) 
+				{
+					endSong();
+				} 
+				else 
+				{
+					startCountdown();
+				}
+		    }
 		} 
 		else 
 		{
